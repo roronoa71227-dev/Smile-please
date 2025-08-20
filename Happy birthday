@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Birthday Poona</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #ffdde1;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      overflow-x: hidden;
+    }
+    h1 {
+      font-size: 3em;
+      color: #d6336c;
+      margin-top: 20px;
+    }
+    h2 {
+      font-size: 1.5em;
+      color: #333;
+    }
+    img.photo {
+      width: 300px;
+      border-radius: 20px;
+      margin-top: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .bear {
+      font-size: 4em;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="bear">🐻❤️</div>
+  <h1>Happy Birthday Poona 🎉</h1>
+  <h2>DOB: 20/8/2007</h2>
+
+  <!-- Center Photo -->
+  <img class="photo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAtAAAAYACAYAAABfJn+gAAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAACAASURBVHic7N3bduM41qbrDxuSkiMyq//Ro1ef9P3f2zpYXX9VVkbYEgmsAxASRYIOImRJVsT7jO" alt="Poona">
+
+  <!-- Background Music -->
+  <audio id="music" autoplay>
+    <source src="snowman.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- Fireworks Canvas -->
+  <canvas id="fireworks"></canvas>
+
+  <script>
+    // Fireworks after music ends
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const fireworks = [];
+    class Particle {
+      constructor(x,y,color){
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = Math.random()*3+2;
+        this.angle = Math.random()*2*Math.PI;
+        this.speed = Math.random()*5+2;
+        this.life = 100;
+      }
+      update(){
+        this.x += Math.cos(this.angle)*this.speed;
+        this.y += Math.sin(this.angle)*this.speed;
+        this.speed *= 0.95;
+        this.life--;
+      }
+      draw(){
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.radius,0,2*Math.PI);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+    }
+
+    function explode(x,y){
+      const colors = ["#ff0000","#00ff00","#0000ff","#ffff00","#ff00ff"];
+      for(let i=0;i<50;i++){
+        fireworks.push(new Particle(x,y,colors[Math.floor(Math.random()*colors.length)]));
+      }
+    }
+
+    function animate(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(let i=fireworks.length-1;i>=0;i--){
+        let f = fireworks[i];
+        f.update();
+        f.draw();
+        if(f.life<=0) fireworks.splice(i,1);
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Trigger fireworks when song ends
+    document.getElementById('music').addEventListener('ended',()=>{
+      for(let i=0;i<10;i++){
+        explode(Math.random()*canvas.width, Math.random()*canvas.height/2);
+      }
+      alert("🎉 Happy Birthday Poona! 🎂 Wishing you lots of love ❤️");
+    });
+  </script>
+</body>
+</html>
